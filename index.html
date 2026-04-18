@@ -1136,7 +1136,7 @@ function startCountdown() {
     if (refreshSecs <= 0) {
       clearInterval(cdInterval);
       document.getElementById('refresh-cd').textContent = 'Refreshing…';
-      loadDataWithTest();
+      loadData();
     }
   }, 1000);
 }
@@ -1539,26 +1539,7 @@ function titleCase(s) {
 }
 
 // ── BOOT ───────────────────────────────────────────────────────────────────
-// TEST MODE: simulate election night results (remove before Tuesday)
-const TEST_MODE = true;
-
-async function loadDataWithTest() {
-  await loadData();
-  if (TEST_MODE && DATA.summary) {
-    // Simulate: 68% reporting, Yes leading 61.2% to 38.8%
-    DATA.summary.precincts_rep  = 1724;
-    DATA.summary.precincts_part = 2534;
-    DATA.summary.pct_reporting  = 68.0;
-    DATA.summary.yes            = 387420;
-    DATA.summary.no             = 245810;
-    DATA.summary.total          = 633230;
-    DATA.summary.yes_pct        = 61.2;
-    DATA.summary.no_pct         = 38.8;
-    DATA.summary.turnout_pct    = 10.4;
-    renderBanner();
-  }
-}
-loadDataWithTest();
+loadData();
 </script>
 </body>
 </html>

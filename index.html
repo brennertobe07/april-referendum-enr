@@ -996,18 +996,18 @@ UDk/hX7zfCL/AINOPhd4dngm8YePfFPiXy23SW1pDFYwy/8AAhlx+dfcf7MH/BLT4F/sg+VJ4K+H
   <!-- STATEWIDE BANNER -->
   <div id="banner">
     <div class="banner-row">
-      <div class="vote-block yes">
-        <span class="label">Yes</span>
-        <span class="count" id="sw-yes">—</span>
-        <span class="pct" id="sw-yes-pct"></span>
-      </div>
-
-      <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0"></div>
-
-      <div class="vote-block no">
-        <span class="label">No</span>
-        <span class="count" id="sw-no">—</span>
-        <span class="pct" id="sw-no-pct"></span>
+      <div style="display:flex;align-items:center;gap:16px;flex-shrink:0">
+        <div class="vote-block yes">
+          <span class="label">Yes</span>
+          <span class="count" id="sw-yes">—</span>
+          <span class="pct" id="sw-yes-pct"></span>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border2)"></div>
+        <div class="vote-block no">
+          <span class="label">No</span>
+          <span class="count" id="sw-no">—</span>
+          <span class="pct" id="sw-no-pct"></span>
+        </div>
       </div>
 
       <div class="vote-bar-wrap">
@@ -1136,7 +1136,7 @@ function startCountdown() {
     if (refreshSecs <= 0) {
       clearInterval(cdInterval);
       document.getElementById('refresh-cd').textContent = 'Refreshing…';
-      loadData();
+      loadDataWithTest();
     }
   }, 1000);
 }
@@ -1539,7 +1539,26 @@ function titleCase(s) {
 }
 
 // ── BOOT ───────────────────────────────────────────────────────────────────
-loadData();
+// TEST MODE: simulate election night results (remove before Tuesday)
+const TEST_MODE = true;
+
+async function loadDataWithTest() {
+  await loadData();
+  if (TEST_MODE && DATA.summary) {
+    // Simulate: 68% reporting, Yes leading 61.2% to 38.8%
+    DATA.summary.precincts_rep  = 1724;
+    DATA.summary.precincts_part = 2534;
+    DATA.summary.pct_reporting  = 68.0;
+    DATA.summary.yes            = 387420;
+    DATA.summary.no             = 245810;
+    DATA.summary.total          = 633230;
+    DATA.summary.yes_pct        = 61.2;
+    DATA.summary.no_pct         = 38.8;
+    DATA.summary.turnout_pct    = 10.4;
+    renderBanner();
+  }
+}
+loadDataWithTest();
 </script>
 </body>
 </html>

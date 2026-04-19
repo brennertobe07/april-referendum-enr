@@ -318,6 +318,7 @@ html, body {
 #main {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 10px 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
@@ -387,7 +388,8 @@ html, body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .tbl-title {
   padding: 10px 16px;
@@ -1340,16 +1342,15 @@ function renderLocalityTable() {
   const tbody = locs.map(loc => {
     const isReporting = loc.precincts_rep > 0;
     const flagged = flaggedFips.has(loc.fips);
-    const yesBar = loc.yes_pct != null ? `<span class="pct-bar yes" style="width:${Math.min(loc.yes_pct,100)*0.5}px"></span>` : '';
     const noBar  = loc.no_pct  != null ? `<span class="pct-bar no"  style="width:${Math.min(loc.no_pct,100)*0.5}px"></span>` : '';
     return `<tr class="${!isReporting && !noResults ? 'dim' : ''}">
       <td><button class="flag-btn ${flagged ? 'flagged' : ''}" onclick="toggleFlag('${loc.fips}', event)">⭐</button></td>
       <td class="name-cell" onclick="selectLocality('${loc.fips}')">${titleCase(loc.name)}</td>
       <td class="right">${reportingBadge(loc.precincts_rep, loc.precincts_part)}</td>
       <td class="right">${isReporting ? `<span class="yes-val">${fmt(loc.yes)}</span>` : '<span class="muted">—</span>'}</td>
-      <td class="right">${yesBar}${isReporting && loc.yes_pct != null ? `<span class="yes-val">${fmtP(loc.yes_pct)}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="right">${isReporting && loc.yes_pct != null ? `<span class="yes-val">${fmtP(loc.yes_pct)}</span>` : '<span class="muted">—</span>'}</td>
       <td class="right">${isReporting ? `<span class="no-val">${fmt(loc.no)}</span>` : '<span class="muted">—</span>'}</td>
-      <td class="right">${noBar}${isReporting && loc.no_pct != null ? `<span class="no-val">${fmtP(loc.no_pct)}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="right">${isReporting && loc.no_pct != null ? `<span class="no-val">${fmtP(loc.no_pct)}</span>` : '<span class="muted">—</span>'}</td>
       <td class="right muted">${isReporting ? fmt(loc.total) : '—'}</td>
       <td class="right muted">${isReporting && loc.turnout_pct != null ? fmtP(loc.turnout_pct) : '—'}</td>
       <td class="right"><span style="color:var(--yes-lt);font-family:var(--mono)">${loc.ab_dem_pct != null ? fmtP(loc.ab_dem_pct) : '—'}</span></td>
@@ -1453,15 +1454,14 @@ function renderPrecinctTable(fips) {
 
   const tbody = sorted.map(p => {
     const rep = p.reporting_status === 'Reported';
-    const yesBar = p.yes_pct != null && rep ? `<span class="pct-bar yes" style="width:${Math.min(p.yes_pct,100)*0.4}px"></span>` : '';
     const noBar  = p.no_pct  != null && rep ? `<span class="pct-bar no"  style="width:${Math.min(p.no_pct, 100)*0.4}px"></span>` : '';
     return `<tr class="${!rep ? 'dim' : ''}">
       <td style="font-weight:500">${p.display_name || p.precinct_name || p.precinct_id}</td>
       <td>${statusBadge(p.reporting_status)}</td>
       <td class="right"><span class="yes-val">${rep ? fmt(p.yes) : '—'}</span></td>
-      <td class="right">${yesBar}<span class="yes-val">${rep && p.yes_pct != null ? fmtP(p.yes_pct) : '—'}</span></td>
+      <td class="right"><span class="yes-val">${rep && p.yes_pct != null ? fmtP(p.yes_pct) : '—'}</span></td>
       <td class="right"><span class="no-val">${rep ? fmt(p.no) : '—'}</span></td>
-      <td class="right">${noBar}<span class="no-val">${rep && p.no_pct != null ? fmtP(p.no_pct) : '—'}</span></td>
+      <td class="right"><span class="no-val">${rep && p.no_pct != null ? fmtP(p.no_pct) : '—'}</span></td>
       <td class="right muted">${rep ? fmt(p.total) : '—'}</td>
       <td class="right muted">${fmt(p.reg_active)}</td>
       <td class="right muted">${rep && p.turnout_pct != null ? fmtP(p.turnout_pct) : '—'}</td>

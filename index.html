@@ -465,6 +465,29 @@ td .muted   { color: var(--text-muted); font-family: var(--mono); font-size: 11p
 .pct-bar.yes { background: var(--yes); }
 .pct-bar.no  { background: var(--no); }
 
+/* Sticky first data column */
+td.name-cell {
+  position: sticky;
+  left: 24px;
+  background: var(--surface);
+  z-index: 5;
+}
+tr:hover td.name-cell { background: rgba(255,255,255,.03); }
+tr.dim td.name-cell   { background: var(--surface); }
+thead th:nth-child(1) {
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  background: var(--surface2);
+  width: 24px;
+}
+thead th:nth-child(2) {
+  position: sticky;
+  left: 24px;
+  z-index: 15;
+  background: var(--surface2);
+}
+
 /* Status badge */
 .badge {
   display: inline-block;
@@ -497,6 +520,16 @@ td .muted   { color: var(--text-muted); font-family: var(--mono); font-size: 11p
 .ab-note strong { color: var(--text); }
 
 /* Tracked flag */
+/* Flag cell sticky */
+td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 4;
+  width: 24px;
+}
+tr:hover td:first-child { background: rgba(255,255,255,.03); }
+
 .flag-btn {
   background: transparent;
   border: none;

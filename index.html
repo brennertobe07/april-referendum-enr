@@ -383,7 +383,6 @@ html, body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
 }
 .tbl-scroll {
   /* overflow handled by #main */
@@ -1378,10 +1377,10 @@ function renderLocalityTable() {
         ${showOnlyTracked ? "<span>Tracked Localities</span>" : "<span>All Localities</span>"}
         <span class="tbl-count">${locs.length}${showOnlyTracked ? " tracked" : " localities"}</span>
       </div>
-      <div class="tbl-scroll"><table>
+      <table>
         <thead><tr>${thead}</tr></thead>
         <tbody>${tbody}</tbody>
-      </table></div>
+      </table>
       ${note}
     </div>`;
 }
@@ -1482,10 +1481,10 @@ function renderPrecinctTable(fips) {
         <span>Precincts</span>
         <span class="tbl-count">${repCount}/${sorted.length} reported</span>
       </div>
-      <div class="tbl-scroll"><table>
+      <table>
         <thead><tr>${thead}</tr></thead>
         <tbody>${tbody}</tbody>
-      </table></div>
+      </table>
     </div>`;
 }
 

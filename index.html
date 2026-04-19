@@ -319,9 +319,10 @@ html, body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px 16px;
+  padding: 10px 16px 10px 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
+  position: relative;
 }
 
 /* Back button */
@@ -1276,7 +1277,7 @@ function renderLocalityTable() {
 
   // Stat cards row
   const cards = `
-    <div class="loc-stat-row" style="margin-bottom:14px">
+    <div class="loc-stat-row" style="margin-bottom:10px;position:sticky;top:0;z-index:10;background:var(--bg);padding:6px 0 4px 0;">
       <div class="loc-stat">
         <div class="ls-label">Precincts Reporting</div>
         <div class="ls-val">${fmt(s.precincts_rep)}/${fmt(s.precincts_part)}</div>

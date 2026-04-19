@@ -316,13 +316,7 @@ html, body {
 
 /* ── MAIN PANEL ─────────────────────────────────────────── */
 #main {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: auto;
-  padding: 10px 16px 10px 16px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
-  position: relative;
+  /* sizing now inline */
 }
 
 /* Back button */
@@ -433,7 +427,7 @@ thead th {
   white-space: nowrap;
   user-select: none;
   position: sticky;
-  top: 56px;
+  top: 0;
   z-index: 10;
   box-shadow: 0 1px 0 var(--border);
 }
@@ -1066,11 +1060,14 @@ UDk/hX7zfCL/AINOPhd4dngm8YePfFPiXy23SW1pDFYwy/8AAhlx+dfcf7MH/BLT4F/sg+VJ4K+H
     </div>
 
     <!-- MAIN -->
-    <div id="main">
-      <button id="back-btn" onclick="selectLocality(null)">← Back to Statewide</button>
-      <div id="loc-header"></div>
-      <div id="main-content">
-        <div class="state-msg"><h3>Loading data…</h3></div>
+    <div id="main-outer" style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;">
+      <div id="stat-cards-bar" style="flex-shrink:0;background:#0f1117;padding:8px 16px 6px;border-bottom:1px solid var(--border2);"></div>
+      <div id="main" style="flex:1;overflow-y:auto;overflow-x:auto;padding:0 16px 10px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;">
+        <button id="back-btn" onclick="selectLocality(null)">← Back to Statewide</button>
+        <div id="loc-header"></div>
+        <div id="main-content">
+          <div class="state-msg"><h3>Loading data…</h3></div>
+        </div>
       </div>
     </div>
 
@@ -1374,7 +1371,8 @@ function renderLocalityTable() {
          Polls close at 7:00 PM ET. Absentee column shows early/mail ballots accepted as of this morning.
        </div>` : '';
 
-  document.getElementById('main-content').innerHTML = cards + `
+  document.getElementById('stat-cards-bar').innerHTML = cards.replace('style="margin-bottom:0;position:sticky;top:0;z-index:20;background:#0f1117;padding:8px 0 10px 0;margin-top:-2px;"', 'style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;"');
+  document.getElementById('main-content').innerHTML = `
     <div class="tbl-wrap">
       <div class="tbl-title">
         ${showOnlyTracked ? "<span>Tracked Localities</span>" : "<span>All Localities</span>"}

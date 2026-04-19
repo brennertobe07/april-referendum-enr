@@ -318,7 +318,7 @@ html, body {
 #main {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   padding: 10px 16px 10px 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
@@ -392,10 +392,7 @@ html, body {
   overflow: hidden;
 }
 .tbl-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
+  /* overflow handled by #main */
 }
 .tbl-title {
   padding: 10px 16px;
@@ -418,6 +415,7 @@ html, body {
 
 table {
   width: 100%;
+  min-width: 900px;
   border-collapse: collapse;
   font-size: 12.5px;
 }
@@ -435,7 +433,7 @@ thead th {
   white-space: nowrap;
   user-select: none;
   position: sticky;
-  top: 0;
+  top: 56px;
   z-index: 10;
   box-shadow: 0 1px 0 var(--border);
 }

@@ -1429,6 +1429,12 @@ function sortPre(col) {
 
 // ── UTILS ──────────────────────────────────────────────────────────────────
 function sortVal(obj, col) {
+  if (col === 'ab_dem_est') {
+    return (obj.ab_dem_pct != null && obj.ab_voted != null) ? Math.round(obj.ab_voted * obj.ab_dem_pct / 100) : -Infinity;
+  }
+  if (col === 'ab_rep_est') {
+    return (obj.ab_rep_pct != null && obj.ab_voted != null) ? Math.round(obj.ab_voted * obj.ab_rep_pct / 100) : -Infinity;
+  }
   const v = obj[col];
   if (v == null) return col === 'name' || col === 'precinct_name' || col === 'reporting_status' ? '' : -Infinity;
   return v;

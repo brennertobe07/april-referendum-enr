@@ -928,6 +928,7 @@ UDk/hX7zfCL/AINOPhd4dngm8YePfFPiXy23SW1pDFYwy/8AAhlx+dfcf7MH/BLT4F/sg+VJ4K+H
     <h1>Virginia <span>April 21, 2026</span> — Proposed Constitutional Amendment</h1>
     <div class="meta" id="meta-bar">
       <span><span class="refresh-dot"></span><span id="last-updated">Loading…</span></span>
+      <span id="ab-updated" style="color:var(--text-muted);font-size:11px;"></span>
       <span id="refresh-cd"></span>
     </div>
   </div>
@@ -1085,7 +1086,9 @@ function render() {
   renderSidebar();
   renderMain();
   document.getElementById('last-updated').textContent =
-    DATA.meta ? `Updated: ${DATA.meta.last_updated}` : '';
+    DATA.meta ? `Results: ${DATA.meta.last_updated}` : '';
+  document.getElementById('ab-updated').textContent =
+    DATA.meta && DATA.meta.ab_updated ? `Ab: ${DATA.meta.ab_updated}` : '';
 }
 
 function renderBanner() {

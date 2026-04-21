@@ -1356,11 +1356,6 @@ function renderLocHeader() {
         <div class="ls-label">Abs. Returned</div>
         <div class="ls-val">${fmt(loc.ab_voted)}</div>
       </div>
-      <div class="loc-stat">
-        <div class="ls-label">Abs. Outstanding</div>
-        <div class="ls-val">${fmt(loc.ab_outstanding)} <span style="font-size:11px;color:var(--text-muted);font-weight:400">${(loc.ab_voted && loc.ab_outstanding != null) ? '(' + Math.round(loc.ab_outstanding / loc.ab_voted * 100) + '%)' : ''}</span></div>
-        ${(loc.ab_dem_outstanding != null || loc.ab_rep_outstanding != null) ? `<div style="font-size:10px;color:var(--text-muted);font-family:var(--mono);margin-top:2px;letter-spacing:0.3px">Est: <span style="color:var(--yes-lt)">D ${fmt(loc.ab_dem_outstanding)}</span> · <span style="color:var(--no-lt)">R ${fmt(loc.ab_rep_outstanding)}</span></div>` : ''}
-      </div>
     </div>`;
 }
 

@@ -1229,6 +1229,10 @@ function renderLocalityTable() {
         <div class="ls-label">Abs. Returned</div>
         <div class="ls-val">${fmtK(s.ab_voted)}</div>
       </div>
+      <div class="loc-stat">
+        <div class="ls-label">Abs. Outstanding</div>
+        <div class="ls-val">${fmtK(s.ab_outstanding)} <span style="font-size:11px;color:var(--text-muted);font-weight:400">${(s.ab_voted && s.ab_outstanding != null) ? '(' + Math.round(s.ab_outstanding / s.ab_voted * 100) + '%)' : ''}</span></div>
+      </div>
     </div>`;
   const locs = [...DATA.localities]
     .filter(l => !showOnlyTracked || flaggedFips.has(l.fips))

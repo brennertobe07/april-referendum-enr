@@ -1296,7 +1296,7 @@ function renderLocalityTable() {
     const noBar  = loc.no_pct  != null ? `<span class="pct-bar no"  style="width:${Math.min(loc.no_pct,100)*0.5}px"></span>` : '';
     return `<tr class="${!isReporting && !noResults ? 'dim' : ''}">
       <td><button class="flag-btn ${flagged ? 'flagged' : ''}" onclick="toggleFlag('${loc.fips}', event)">⭐</button></td>
-      <td class="name-cell" onclick="selectLocality('${loc.fips}')">${titleCase(loc.name)}${abChip(loc.absentee_state, 'inline')}</td>
+      <td class="name-cell" onclick="selectLocality('${loc.fips}')">${titleCase(loc.name)}</td>
       <td class="right">${reportingBadge(loc.precincts_rep, loc.precincts_part)}</td>
       <td>${abChip(loc.absentee_state)}</td>
       <td class="right">${isReporting ? `<span class="yes-val">${fmt(loc.yes)}</span>` : '<span class="muted">—</span>'}</td>

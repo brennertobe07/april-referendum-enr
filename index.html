@@ -489,7 +489,7 @@ li:hover .flag-btn { opacity: .4; filter: grayscale(1); }
 .method-chip .mc-no    { color: var(--no-lt);  font-family: var(--mono); }
 .method-chip .mc-sep   { color: var(--border2); margin: 0 3px; }
 
-/* Absentee reporting-state chips (pending / reported / canvassed) */
+/* Absentee reporting-state chips (5 granular states) */
 .ab-chip {
   display: inline-block;
   padding: 1px 7px;
@@ -502,10 +502,12 @@ li:hover .flag-btn { opacity: .4; filter: grayscale(1); }
   line-height: 1.5;
   vertical-align: middle;
 }
-.ab-chip.pending   { background: rgba(136,144,168,0.12); color: var(--text-muted); border: 1px solid rgba(136,144,168,0.35); }
-.ab-chip.reported  { background: rgba(58,143,212,0.15);  color: var(--accent);     border: 1px solid rgba(58,143,212,0.45); }
-.ab-chip.canvassed { background: rgba(39,174,96,0.15);   color: var(--green);      border: 1px solid rgba(39,174,96,0.45); }
-.ab-chip.inline    { margin-left: 6px; }
+.ab-chip.not-reported    { background: rgba(136,144,168,0.12); color: var(--text-muted); border: 1px solid rgba(136,144,168,0.35); }
+.ab-chip.in-person-only  { background: rgba(240,165,0,0.14);   color: var(--amber);      border: 1px solid rgba(240,165,0,0.45); }
+.ab-chip.mailed-only     { background: rgba(116,205,201,0.14); color: #74cdc9;           border: 1px solid rgba(116,205,201,0.45); }
+.ab-chip.all-reported    { background: rgba(58,143,212,0.15);  color: var(--accent);     border: 1px solid rgba(58,143,212,0.45); }
+.ab-chip.final           { background: rgba(39,174,96,0.15);   color: var(--green);      border: 1px solid rgba(39,174,96,0.45); }
+.ab-chip.inline          { margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -1489,8 +1491,14 @@ function sortVal(obj, col) {
     return (obj.ab_rep_pct != null && obj.ab_voted != null) ? Math.round(obj.ab_voted * obj.ab_rep_pct / 100) : -Infinity;
   }
   if (col === 'absentee_state') {
-    // Order: pending (0) → reported (1) → canvassed (2)
-    const order = { pending: 0, reported: 1, canvassed: 2 };
+    // Order: not-reported → in-person-only → mailed-only → all-reported → final
+    const order = {
+      'not-reported':    0,
+      'in-person-only':  1,
+      'mailed-only':     2,
+      'all-reported':    3,
+      'final':           4,
+    };
     return order[obj.absentee_state] != null ? order[obj.absentee_state] : -1;
   }
   const v = obj[col];
@@ -1520,10 +1528,17 @@ function statusBadge(status) {
 }
 
 function abChip(state, style) {
-  // state: 'pending' | 'reported' | 'canvassed'
+  // state: 'not-reported' | 'in-person-only' | 'mailed-only' | 'all-reported' | 'final'
   // style: 'inline' or '' (inline adds left margin for use next to locality name)
-  const s = state || 'pending';
-  const label = s === 'canvassed' ? 'Canvassed' : (s === 'reported' ? 'Reported' : 'Pending');
+  const s = state || 'not-reported';
+  const labels = {
+    'not-reported':    'Not Reported',
+    'in-person-only':  'In-Person Only',
+    'mailed-only':     'Mailed Only',
+    'all-reported':    'All Reported',
+    'final':           'Final',
+  };
+  const label = labels[s] || 'Not Reported';
   const extra = style === 'inline' ? ' inline' : '';
   return `<span class="ab-chip ${s}${extra}">${label}</span>`;
 }

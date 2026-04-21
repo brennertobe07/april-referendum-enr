@@ -1261,6 +1261,9 @@ function renderLocalityTable() {
     { key: 'ncec_demperf',  label: 'DemPerf',            cls: 'right' },
     { key: 'delta',         label: 'Yes vs Base',         cls: 'right' },
     { key: 'ab_voted',      label: 'Abs. Returned',      cls: 'right' },
+    { key: 'ab_outstanding',     label: 'Abs. Outstanding',   cls: 'right' },
+    { key: 'ab_dem_outstanding', label: 'D Out Est',          cls: 'right' },
+    { key: 'ab_rep_outstanding', label: 'R Out Est',          cls: 'right' },
   ];
 
   const thead = headers.map(h =>
@@ -1289,6 +1292,9 @@ function renderLocalityTable() {
       <td class="right muted">${loc.ncec_demperf != null ? fmtP(loc.ncec_demperf) : '—'}</td>
       <td class="right">${deltaCell(isReporting, loc.yes_pct, loc.ncec_demperf)}</td>
       <td class="right muted">${fmt(loc.ab_voted)}</td>
+      <td class="right">${fmt(loc.ab_outstanding)}</td>
+      <td class="right"><span style="color:var(--yes-lt);font-family:var(--mono)">${fmt(loc.ab_dem_outstanding)}</span></td>
+      <td class="right"><span style="color:var(--no-lt);font-family:var(--mono)">${fmt(loc.ab_rep_outstanding)}</span></td>
     </tr>`;
   }).join('');
 

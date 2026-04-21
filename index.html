@@ -488,6 +488,24 @@ li:hover .flag-btn { opacity: .4; filter: grayscale(1); }
 .method-chip .mc-yes   { color: var(--yes-lt); font-family: var(--mono); }
 .method-chip .mc-no    { color: var(--no-lt);  font-family: var(--mono); }
 .method-chip .mc-sep   { color: var(--border2); margin: 0 3px; }
+
+/* Absentee reporting-state chips (pending / reported / canvassed) */
+.ab-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-family: var(--font);
+  line-height: 1.5;
+  vertical-align: middle;
+}
+.ab-chip.pending   { background: rgba(136,144,168,0.12); color: var(--text-muted); border: 1px solid rgba(136,144,168,0.35); }
+.ab-chip.reported  { background: rgba(58,143,212,0.15);  color: var(--accent);     border: 1px solid rgba(58,143,212,0.45); }
+.ab-chip.canvassed { background: rgba(39,174,96,0.15);   color: var(--green);      border: 1px solid rgba(39,174,96,0.45); }
+.ab-chip.inline    { margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -1248,6 +1266,7 @@ function renderLocalityTable() {
     { key: 'flag',          label: '⭐',                cls: '' },
     { key: 'name',          label: 'Locality',          cls: '' },
     { key: 'pct_reporting', label: 'Reporting',          cls: 'right' },
+    { key: 'absentee_state',label: 'Ab Status',          cls: '' },
     { key: 'yes',           label: 'Yes',                cls: 'right' },
     { key: 'yes_pct',       label: 'Yes %',              cls: 'right' },
     { key: 'no',            label: 'No',                 cls: 'right' },
@@ -1277,8 +1296,9 @@ function renderLocalityTable() {
     const noBar  = loc.no_pct  != null ? `<span class="pct-bar no"  style="width:${Math.min(loc.no_pct,100)*0.5}px"></span>` : '';
     return `<tr class="${!isReporting && !noResults ? 'dim' : ''}">
       <td><button class="flag-btn ${flagged ? 'flagged' : ''}" onclick="toggleFlag('${loc.fips}', event)">⭐</button></td>
-      <td class="name-cell" onclick="selectLocality('${loc.fips}')">${titleCase(loc.name)}</td>
+      <td class="name-cell" onclick="selectLocality('${loc.fips}')">${titleCase(loc.name)}${abChip(loc.absentee_state, 'inline')}</td>
       <td class="right">${reportingBadge(loc.precincts_rep, loc.precincts_part)}</td>
+      <td>${abChip(loc.absentee_state)}</td>
       <td class="right">${isReporting ? `<span class="yes-val">${fmt(loc.yes)}</span>` : '<span class="muted">—</span>'}</td>
       <td class="right">${isReporting && loc.yes_pct != null ? `<span class="yes-val">${fmtP(loc.yes_pct)}</span>` : '<span class="muted">—</span>'}</td>
       <td class="right">${isReporting ? `<span class="no-val">${fmt(loc.no)}</span>` : '<span class="muted">—</span>'}</td>
@@ -1326,7 +1346,7 @@ function renderLocHeader() {
   const isReporting = loc.precincts_rep > 0;
   document.getElementById('loc-header').style.display = 'block';
   document.getElementById('loc-header').innerHTML = `
-    <h2>${titleCase(loc.name)}</h2>
+    <h2>${titleCase(loc.name)}${abChip(loc.absentee_state, 'inline')}</h2>
     <div class="loc-stat-row">
       <div class="loc-stat">
         <div class="ls-label">Precincts</div>
@@ -1454,6 +1474,11 @@ function sortVal(obj, col) {
   if (col === 'ab_rep_est') {
     return (obj.ab_rep_pct != null && obj.ab_voted != null) ? Math.round(obj.ab_voted * obj.ab_rep_pct / 100) : -Infinity;
   }
+  if (col === 'absentee_state') {
+    // Order: pending (0) → reported (1) → canvassed (2)
+    const order = { pending: 0, reported: 1, canvassed: 2 };
+    return order[obj.absentee_state] != null ? order[obj.absentee_state] : -1;
+  }
   const v = obj[col];
   if (v == null) return col === 'name' || col === 'precinct_name' || col === 'reporting_status' ? '' : -Infinity;
   return v;
@@ -1478,6 +1503,15 @@ function statusBadge(status) {
   if (status === 'Reported')
     return '<span class="badge reported">Reported</span>';
   return `<span class="badge partial">${status}</span>`;
+}
+
+function abChip(state, style) {
+  // state: 'pending' | 'reported' | 'canvassed'
+  // style: 'inline' or '' (inline adds left margin for use next to locality name)
+  const s = state || 'pending';
+  const label = s === 'canvassed' ? 'Canvassed' : (s === 'reported' ? 'Reported' : 'Pending');
+  const extra = style === 'inline' ? ' inline' : '';
+  return `<span class="ab-chip ${s}${extra}">${label}</span>`;
 }
 
 function titleCase(s) {

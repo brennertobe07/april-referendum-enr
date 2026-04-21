@@ -1232,6 +1232,7 @@ function renderLocalityTable() {
       <div class="loc-stat">
         <div class="ls-label">Abs. Outstanding</div>
         <div class="ls-val">${fmtK(s.ab_outstanding)} <span style="font-size:11px;color:var(--text-muted);font-weight:400">${(s.ab_voted && s.ab_outstanding != null) ? '(' + Math.round(s.ab_outstanding / s.ab_voted * 100) + '%)' : ''}</span></div>
+        ${(s.ab_dem_outstanding != null || s.ab_rep_outstanding != null) ? `<div style="font-size:10px;color:var(--text-muted);font-family:var(--mono);margin-top:2px;letter-spacing:0.3px">Est: <span style="color:var(--yes-lt)">D ${fmtK(s.ab_dem_outstanding)}</span> · <span style="color:var(--no-lt)">R ${fmtK(s.ab_rep_outstanding)}</span></div>` : ''}
       </div>
     </div>`;
   const locs = [...DATA.localities]

@@ -1432,7 +1432,9 @@ function renderPrecinctTable(fips) {
   ).join('');
 
   const tbody = sorted.map(p => {
-    const rep = p.reporting_status === 'Reported';
+    // ENR uses "Election Night Complete" (election night) and "Fully Reported" (post-canvass).
+    // Anything other than "Not Reported" / empty means vote counts are present.
+    const rep = p.reporting_status && p.reporting_status !== 'Not Reported';
     const noBar  = p.no_pct  != null && rep ? `<span class="pct-bar no"  style="width:${Math.min(p.no_pct, 100)*0.4}px"></span>` : '';
     return `<tr class="${!rep ? 'dim' : ''}">
       <td style="font-weight:500">${p.display_name || p.precinct_name || p.precinct_id}</td>
@@ -1447,7 +1449,15 @@ function renderPrecinctTable(fips) {
     </tr>`;
   }).join('');
 
-  const repCount = sorted.filter(p => p.reporting_status === 'Reported').length;
+  const repCount = sorted.filter(p => p.reporting_status && p.reporting_status !== 'Not Reported').length;
+
+  // On election night, EV+MA votes live in virtual CAP precincts; real precincts show
+  // Election Day only. Check if any precinct has EV or MA votes — if not, add disclaimer.
+  const hasAbsenteeAtPrecinct = sorted.some(p => (p.yes_ev||0)+(p.no_ev||0)+(p.yes_mail||0)+(p.no_mail||0) > 0);
+  const edOnlyNote = (!hasAbsenteeAtPrecinct && repCount > 0) ?
+    `<div style="padding:8px 16px;font-size:11px;color:var(--amber);border-top:1px solid var(--border);background:rgba(240,165,0,0.04)">
+       ⚠ Precinct totals reflect <strong>Election Day votes only</strong>. Early Voting and Mailed Absentee votes are reported at the locality level (not yet redistributed to precincts — happens during canvass).
+     </div>` : '';
 
   document.getElementById('main-content').innerHTML = `
     <div class="tbl-wrap">
@@ -1459,6 +1469,7 @@ function renderPrecinctTable(fips) {
         <thead><tr>${thead}</tr></thead>
         <tbody>${tbody}</tbody>
       </table>
+      ${edOnlyNote}
     </div>`;
 }
 
@@ -1522,6 +1533,10 @@ function reportingBadge(rep, part) {
 function statusBadge(status) {
   if (!status || status === 'Not Reported')
     return '<span class="badge not-rep">Not Reported</span>';
+  if (status === 'Fully Reported')
+    return '<span class="badge reported">Final</span>';
+  if (status === 'Election Night Complete')
+    return '<span class="badge partial">Election Night Complete</span>';
   if (status === 'Reported')
     return '<span class="badge reported">Reported</span>';
   return `<span class="badge partial">${status}</span>`;

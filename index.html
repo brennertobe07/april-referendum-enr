@@ -959,18 +959,20 @@ UDk/hX7zfCL/AINOPhd4dngm8YePfFPiXy23SW1pDFYwy/8AAhlx+dfcf7MH/BLT4F/sg+VJ4K+H
       <span style="font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--yes-lt);text-transform:uppercase;">YES</span>
       <span id="sw-yes" style="font-size:22px;font-weight:500;color:#a8c8e8;font-family:var(--mono);">—</span>
       <span id="sw-yes-pct" style="font-size:18px;color:var(--yes-lt);font-family:var(--mono);font-weight:500;"></span>
-      <div style="height:26px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;">
+      <div style="height:26px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;position:relative;">
         <div id="bar-yes" style="width:0%;height:100%;background:var(--yes);transition:width .6s ease;"></div>
         <div id="bar-yes-proj" style="width:0%;height:100%;background:var(--yes-lt);opacity:0.22;transition:width .6s ease;"></div>
+        <span id="sw-yes-proj-lbl" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-family:var(--mono);color:var(--yes-lt);opacity:0.55;font-weight:500;pointer-events:none;display:none;"></span>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:60px 200px 70px 1fr;align-items:center;gap:14px;margin-bottom:14px;">
       <span style="font-size:20px;font-weight:700;letter-spacing:.08em;color:var(--no-lt);text-transform:uppercase;">NO</span>
       <span id="sw-no" style="font-size:22px;font-weight:500;color:#e8a8a0;font-family:var(--mono);">—</span>
       <span id="sw-no-pct" style="font-size:18px;color:var(--no-lt);font-family:var(--mono);font-weight:500;"></span>
-      <div style="height:26px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;">
+      <div style="height:26px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;position:relative;">
         <div id="bar-no" style="width:0%;height:100%;background:var(--no);transition:width .6s ease;"></div>
         <div id="bar-no-proj" style="width:0%;height:100%;background:var(--no-lt);opacity:0.22;transition:width .6s ease;"></div>
+        <span id="sw-no-proj-lbl" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-family:var(--mono);color:var(--no-lt);opacity:0.55;font-weight:500;pointer-events:none;display:none;"></span>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:60px 200px 70px 1fr;align-items:center;gap:14px;">
@@ -1139,6 +1141,25 @@ function renderBanner() {
   document.getElementById('bar-yes-proj').style.width = yesProj + '%';
   document.getElementById('bar-no').style.width  = noSolid  + '%';
   document.getElementById('bar-no-proj').style.width  = noProj  + '%';
+
+  // Faint projected % labels: show final Yes%/No% IF outstanding lands as estimated.
+  // Formula: (current yes + dem_outstanding) / (current yes+no + total outstanding)
+  // Hide when outstanding drops below 1% of returned absentee (estimate no longer meaningful).
+  const yesLbl = document.getElementById('sw-yes-proj-lbl');
+  const noLbl  = document.getElementById('sw-no-proj-lbl');
+  const abReturned = s.ab_voted || 0;
+  const outstandingPct = abReturned > 0 ? (outstanding / abReturned * 100) : 0;
+  if (outstanding > 0 && outstandingPct >= 1 && totalProjected > 0) {
+    const projYesFinal = ((s.yes || 0) + (s.ab_dem_outstanding || 0)) / totalProjected * 100;
+    const projNoFinal  = ((s.no  || 0) + (s.ab_rep_outstanding || 0)) / totalProjected * 100;
+    yesLbl.textContent = 'proj ' + projYesFinal.toFixed(1) + '%';
+    noLbl.textContent  = 'proj ' + projNoFinal.toFixed(1)  + '%';
+    yesLbl.style.display = 'inline';
+    noLbl.style.display  = 'inline';
+  } else {
+    yesLbl.style.display = 'none';
+    noLbl.style.display  = 'none';
+  }
 
   const pctRep = s.pct_reporting || 0;
   document.getElementById('bar-reporting').style.width = pctRep + '%';
